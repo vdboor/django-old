@@ -136,6 +136,7 @@ def items_for_result(cl, result, form):
     pk = cl.lookup_opts.pk.attname
     for field_name in cl.list_display:
         row_class = ''
+        row_classes = []
         try:
             f, attr, value = lookup_field(field_name, result, cl.model_admin)
         except (AttributeError, ObjectDoesNotExist):
@@ -143,7 +144,7 @@ def items_for_result(cl, result, form):
         else:
             if f is None:
                 if field_name == u'action_checkbox':
-                    row_class = ' class="action-checkbox"'
+                    row_classes = ['action-checkbox']
                 allow_tags = getattr(attr, 'allow_tags', False)
                 boolean = getattr(attr, 'boolean', False)
                 if boolean:
@@ -169,9 +170,14 @@ def items_for_result(cl, result, form):
                 if isinstance(f, models.DateField)\
                 or isinstance(f, models.TimeField)\
                 or isinstance(f, models.ForeignKey):
-                    row_class = ' class="nowrap"'
+                    row_classes.append('nowrap')
         if force_unicode(result_repr) == '':
             result_repr = mark_safe('&nbsp;')
+        column_class = cl.list_column_classes.get(field_name)
+        if column_class:
+            row_classes.append(column_class)
+        if row_classes:
+            row_class = ' class="%s"' % ' '.join(row_classes)
         # If list_display_links not defined, add the link tag to the first field
         if (first and not cl.list_display_links) or field_name in cl.list_display_links:
             table_tag = {True:'th', False:'td'}[first]

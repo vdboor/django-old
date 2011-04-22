@@ -27,13 +27,14 @@ ERROR_FLAG = 'e'
 EMPTY_CHANGELIST_VALUE = ugettext_lazy('(None)')
 
 class ChangeList(object):
-    def __init__(self, request, model, list_display, list_display_links, list_filter, date_hierarchy, search_fields, list_select_related, list_per_page, list_editable, model_admin):
+    def __init__(self, request, model, list_display, list_display_links, list_column_classes, list_filter, date_hierarchy, search_fields, list_select_related, list_per_page, list_editable, model_admin):
         self.model = model
         self.opts = model._meta
         self.lookup_opts = self.opts
         self.root_query_set = model_admin.queryset(request)
         self.list_display = list_display
         self.list_display_links = list_display_links
+        self.list_column_classes = list_column_classes
         self.list_filter = list_filter
         self.date_hierarchy = date_hierarchy
         self.search_fields = search_fields
