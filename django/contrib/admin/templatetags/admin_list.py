@@ -100,7 +100,10 @@ def result_headers(cl):
             # It is a non-field, but perhaps one that is sortable
             admin_order_field = getattr(attr, "admin_order_field", None)
             if not admin_order_field:
-                yield {"text": header}
+                yield {
+                    "text": header,
+                    "class_attrib": mark_safe(' class="col-%s"' % field_name)
+                }
                 continue
 
             # So this _is_ a sortable non-field.  Go to the yield
@@ -108,7 +111,7 @@ def result_headers(cl):
         else:
             admin_order_field = None
 
-        th_classes = []
+        th_classes = ['col-' + field_name]
         new_order_type = 'asc'
         if field_name == cl.order_field or admin_order_field == cl.order_field:
             th_classes.append('sorted %sending' % cl.order_type.lower())
@@ -118,7 +121,7 @@ def result_headers(cl):
             "text": header,
             "sortable": True,
             "url": cl.get_query_string({ORDER_VAR: i, ORDER_TYPE_VAR: new_order_type}),
-            "class_attrib": mark_safe(th_classes and ' class="%s"' % ' '.join(th_classes) or '')
+            "class_attrib": mark_safe(' class="%s"' % ' '.join(th_classes))
         }
 
 def _boolean_icon(field_val):
